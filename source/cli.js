@@ -30,5 +30,8 @@ const cli = meow(
 	},
 );
 
-if (cli.flags.fullscreen) withFullScreen(<App />, {exitOnCtrlC: false}).start();
-else render(<App />);
+if (cli.flags.fullscreen) {
+	withFullScreen(<App />, {exitOnCtrlC: true}).start();
+} else {
+	render(<App />);
+}

@@ -1,84 +1,91 @@
 {
-  "name": "what-figure-drawn-game-cli",
-  "description": "CLI game where you need to find out which figure was drawn by marker",
-  "version": "1.0.0",
-  "license": "MIT",
-  "bin": "dist/cli.js",
-  "type": "module",
-  "engines": {
-    "node": ">=16"
-  },
-  "scripts": {
-    "build": "babel --out-dir=dist source",
-    "dev": "babel --out-dir=dist --watch source",
-    "test": "prettier --check . && xo && ava",
-    "lint": "xo",
-    "go": "node dist/cli.js",
-    "prettify": "prettier . --write",
-    "xofix": "xo --fix"
-  },
-  "files": [
-    "dist"
-  ],
-  "dependencies": {
-    "figures": "^6.1.0",
-    "fullscreen-ink": "^0.0.2",
-    "ink": "^4.2.0",
-    "ink-text-input-2": "^1.0.0",
-    "meow": "^12.0.1",
-    "nanoid": "^5.0.6",
-    "rambda": "^9.1.1",
-    "react": "^18.2.0",
-    "valtio": "^1.13.2"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.22.5",
-    "@babel/preset-react": "^7.22.5",
-    "ava": "^5.3.0",
-    "chalk": "^5.2.0",
-    "eslint-config-xo-react": "^0.27.0",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "import-jsx": "^5.0.0",
-    "ink-testing-library": "^3.0.0",
-    "prettier": "^3.0.3",
-    "xo": "^0.56.0"
-  },
-  "ava": {
-    "environmentVariables": {
-      "NODE_NO_WARNINGS": "1"
-    },
-    "nodeArguments": [
-      "--loader=import-jsx"
-    ]
-  },
-  "xo": {
-    "extends": "xo-react",
-    "prettier": true,
-    "rules": {
-      "react/prop-types": "off"
-    }
-  },
-  "prettier": {
-    "useTabs": true,
-    "semi": true,
-    "singleQuote": true,
-    "quoteProps": "as-needed",
-    "bracketSpacing": false,
-    "arrowParens": "avoid",
-    "trailingComma": "all"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-react"
-    ]
-  },
-  "keywords": [
-    "cli",
-    "figures",
-    "fun",
-    "game",
-    "interactive",
-    "rest"
-  ]
+	"name": "what-figure-drawn-game-cli",
+	"description": "CLI game where you need to figure out a shape whose outline is being drawn with a marker, the previous mark of which is erased",
+	"version": "1.0.1",
+	"license": "MIT",
+	"bin": "dist/cli.js",
+	"type": "module",
+	"engines": {
+		"node": ">=16"
+	},
+	"scripts": {
+		"build": "babel --out-dir=dist source",
+		"dev": "babel --out-dir=dist --watch source",
+		"test": "prettier --check . && xo && ava",
+		"lint": "xo",
+		"go": "node dist/cli.js",
+		"prettify": "prettier . --write",
+		"xofix": "xo --fix"
+	},
+	"files": [
+		"dist"
+	],
+	"dependencies": {
+		"figures": "^6.1.0",
+		"fullscreen-ink": "^0.0.2",
+		"ink": "^4.2.0",
+		"ink-gradient": "^3.0.0",
+		"ink-text-input-2": "^1.0.0",
+		"log-update": "^6.0.0",
+		"meow": "^12.0.1",
+		"nanoid": "^5.0.6",
+		"rambda": "^9.1.1",
+		"react": "^18.2.0",
+		"valtio": "^1.13.2"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.22.5",
+		"@babel/preset-react": "^7.22.5",
+		"ava": "^5.3.0",
+		"chalk": "^5.2.0",
+		"eslint-config-xo-react": "^0.27.0",
+		"eslint-plugin-react": "^7.32.2",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"import-jsx": "^5.0.0",
+		"ink-testing-library": "^3.0.0",
+		"prettier": "^3.0.3",
+		"xo": "^0.56.0"
+	},
+	"ava": {
+		"environmentVariables": {
+			"NODE_NO_WARNINGS": "1"
+		},
+		"nodeArguments": [
+			"--loader=import-jsx"
+		]
+	},
+	"xo": {
+		"extends": "xo-react",
+		"prettier": true,
+		"rules": {
+			"react/prop-types": "off"
+		}
+	},
+	"prettier": {
+		"useTabs": true,
+		"semi": true,
+		"singleQuote": true,
+		"quoteProps": "as-needed",
+		"bracketSpacing": false,
+		"arrowParens": "avoid",
+		"trailingComma": "all"
+	},
+	"babel": {
+		"presets": [
+			"@babel/preset-react"
+		]
+	},
+	"keywords": [
+		"cli",
+		"figures",
+		"fun",
+		"game",
+		"interactive",
+		"rest",
+		"shape",
+		"geometry",
+		"marker",
+		"drawing",
+		"draw"
+	]
 }

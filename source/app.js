@@ -4,7 +4,10 @@ import TextInput from 'ink-text-input-2';
 import {proxy, useSnapshot} from 'valtio';
 import * as R from 'rambda';
 import figureSet from 'figures';
-import {nanoid} from 'nanoid';
+import Gradient from 'ink-gradient';
+import Grid from './grid.js';
+
+const randomItem = array => array[Math.floor(Math.random() * array.length)];
 
 const state = proxy({
 	count: 0,
@@ -16,6 +19,8 @@ const state = proxy({
 	directions: [],
 	intervalId: null,
 	answer: '',
+	grd: new Grid(9, 9, {fillValue: figureSet.squareSmall}),
+	roundFigure: '',
 });
 
 export default function App() {
@@ -36,8 +41,9 @@ export default function App() {
 				exit();
 			}
 
-			if (input === 'y') {
+			if (R.includes(input, ['y', 'n'])) {
 				state.status = 'RUNNING';
+				state.answer = '';
 				state.newLinesCount = 13;
 				state.spaceCount = 0;
 				state.diagX = 0;
@@ -47,84 +53,27 @@ export default function App() {
 					{name: 'rightLeft', passed: false},
 					{name: 'diagonal', passed: false},
 				];
+
+				const roundFigure = randomItem(
+					R.flatten(R.repeat(['triangle', 'rectangle', 'square'], 15)),
+				);
+				const roundGrid = new Grid(roundFigure === 'rectangle' ? 15 : 9, 9, {
+					fillValue: figureSet.bullet,
+				});
+				roundGrid.setAnimatableFigure(roundFigure);
+				state.grd = roundGrid;
+				state.roundFigure = roundFigure;
 				const interval = setInterval(() => {
-					// FigureSet.squareSmallFilled;
-					const newNewLinesCount = state.newLinesCount - 1;
-					const bottomUpIndex = R.findIndex(
-						R.propEq('bottomUp', 'name'),
-						state.directions,
-					);
-					const rightLeftIndex = R.findIndex(
-						R.propEq('rightLeft', 'name'),
-						state.directions,
-					);
-					const diagonalIndex = R.findIndex(
-						R.propEq('diagonal', 'name'),
-						state.directions,
-					);
-					let bottomUpPassed = R.path(
-						[bottomUpIndex, 'passed'],
-						state.directions,
-					);
-
-					if (newNewLinesCount > 0 && !bottomUpPassed)
-						state.newLinesCount = newNewLinesCount;
-					else if (
-						R.pathEq([bottomUpIndex, 'passed'], false, state.directions)
-					) {
-						state.directions = R.set(
-							R.lensPath([bottomUpIndex, 'passed']),
-							true,
-							state.directions,
-						);
-					}
-
-					const newSpaceCount = state.spaceCount + 1;
-					bottomUpPassed = R.path([bottomUpIndex, 'passed'], state.directions);
-					const rightLeftPassed = R.path(
-						[rightLeftIndex, 'passed'],
-						state.directions,
-					);
-					const diagonalPassed = R.path(
-						[diagonalIndex, 'passed'],
-						state.directions,
-					);
-
-					if (newSpaceCount < 14 && bottomUpPassed) {
-						state.spaceCount = newSpaceCount;
-					} else if (bottomUpPassed && !rightLeftPassed) {
-						state.directions = R.set(
-							R.lensPath([rightLeftIndex, 'passed']),
-							true,
-							state.directions,
-						);
-					}
-
-					if (bottomUpPassed && rightLeftPassed && !diagonalPassed) {
-						const newX = state.diagX - 1;
-						const newY = state.diagY - 1;
-
-						if (Math.abs(newX) > 13 && Math.abs(newY) > 13) {
-							state.directions = R.set(
-								R.lensPath([diagonalIndex, 'passed']),
-								true,
-								state.directions,
-							);
-						} else {
-							state.diagX = newX;
-							state.diagY = newY;
-						}
-					}
-
-					if (R.all(R.propEq(true, 'passed'), state.directions)) {
+					state.grd.nextTick();
+					if (state.grd.allPassed) {
 						state.status = 'ASKING';
 						clearInterval(interval);
 					}
-				}, 500);
+				}, 300);
 				state.intervalId = interval;
 			}
 		},
-		{isActive: snap.status !== 'RUNNING'},
+		{isActive: R.complement(R.includes)(snap.status, ['RUNNING', 'ASKING'])},
 	);
 
 	useInput(
@@ -138,7 +87,7 @@ export default function App() {
 
 	if (snap.status === 'ASKING') {
 		return (
-			<Box flexDirection="column">
+			<Box flexDirection="column" alignItems="center" justifyContent="center">
 				<Text>What figure was drawn?</Text>
 				<TextInput
 					value={snap.answer}
@@ -146,7 +95,7 @@ export default function App() {
 						state.answer = value;
 					}}
 					onSubmit={value => {
-						state.result = value === 'triangle' ? 'SUCCESS' : 'FAILURE';
+						state.result = value === snap.roundFigure ? 'SUCCESS' : 'FAILURE';
 						state.status = 'FINISHED';
 					}}
 				/>
@@ -156,14 +105,46 @@ export default function App() {
 
 	if (snap.status === 'FINISHED') {
 		return (
-			<Box flexDirection="column">
+			<Box flexDirection="column" columnGap={2} alignItems="center">
 				<Text>Game over</Text>
-				<Box>
-					{snap.result === 'SUCCESS' ? (
-						<Text color="green">You won</Text>
-					) : (
+				{snap.result === 'SUCCESS' ? (
+					<Box marginTop={1} flexDirection="column" rowGap={1}>
+						<Text color="green">You won!</Text>
+						<Text>
+							<Text color="green">{figureSet.tick}</Text>
+							{` ${snap.roundFigure}`}
+						</Text>
+					</Box>
+				) : (
+					<Box marginTop={1} flexDirection="column" rowGap={1}>
 						<Text color="red">You lost</Text>
-					)}
+						<Box flexDirection="column">
+							<Text>
+								<Text color="red">{figureSet.cross}</Text>
+								{` ${snap.answer}`}
+							</Text>
+							<Text>
+								<Text color="green">{figureSet.tick}</Text>
+								{` ${snap.roundFigure}`}
+							</Text>
+						</Box>
+					</Box>
+				)}
+				<Box paddingTop={1}>
+					<Text>
+						{' '}
+						<Text bold color="cyan">
+							n
+						</Text>{' '}
+						- start new round
+					</Text>
+					<Text>
+						{' '}
+						<Text bold color="cyan">
+							q
+						</Text>{' '}
+						- quit
+					</Text>
 				</Box>
 			</Box>
 		);
@@ -172,32 +153,27 @@ export default function App() {
 	return (
 		<Box flexDirection="column">
 			{snap.status === 'RUNNING' ? (
-				<>
-					{R.times(
-						() => (
-							<Text key={nanoid()}>{` `}</Text>
-						),
-						Math.abs(snap.newLinesCount + snap.diagY),
-					)}
-					<Box>
-						<Text>
-							{R.join(
-								'',
-								R.times(() => ` `, Math.abs(snap.spaceCount + snap.diagX)),
-							)}
-							{figureSet.squareSmallFilled}
-						</Text>
-					</Box>
-				</>
+				<Box alignItems="center" justifyContent="center">
+					<Text>{snap.grd.getStr()}</Text>
+				</Box>
 			) : (
-				<Text>
-					Try to find out which figure is being drawn by marker. Are you ready?
-					Press{' '}
-					<Text bold color="cyan">
-						y
-					</Text>{' '}
-					to start.
-				</Text>
+				<Box flexDirection="column" alignItems="center" rowGap={2}>
+					<Gradient name="fruit">
+						<Text>what-figure-drawn-game</Text>
+					</Gradient>
+					<Text>
+						Try to figure out a shape whose outline is being drawn with a
+						marker, the previous mark of which is erased.
+						{figureSet.arrowDown}
+					</Text>
+					<Text>
+						Are you ready? Press{' '}
+						<Text bold color="cyan">
+							y
+						</Text>{' '}
+						to start.
+					</Text>
+				</Box>
 			)}
 		</Box>
 	);

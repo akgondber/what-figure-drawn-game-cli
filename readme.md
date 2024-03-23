@@ -1,6 +1,6 @@
 # what-figure-drawn-game-cli [![NPM version][npm-image]][npm-url]
 
-> CLI game where you need to find out which figure was drawn by marker
+> CLI game where you need to figure out a shape whose outline is being drawn with a marker, the previous mark of which is erased
 
 ## Install
 
@@ -13,13 +13,13 @@ $ npm install --global what-figure-drawn-game-cli
 ```
 $ what-figure-drawn-game-cli --help
 
-  CLI game where you need to find out which figure was drawn by marker
+CLI game where you need to figure out a shape whose outline is being drawn with a marker, the previous mark of which is erased
 
   Usage
     $ what-figure-drawn-game-cli
 
   Options
-        --fullscren  Whether to use fullscreen mode
+    --fullscren  Whether to use fullscreen mode
 
   Examples
     $ what-figure-drawn-game-cli
