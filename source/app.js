@@ -5,7 +5,9 @@ import {proxy, useSnapshot} from 'valtio';
 import * as R from 'rambda';
 import figureSet from 'figures';
 import Gradient from 'ink-gradient';
+import {IflessString} from 'ifless';
 import Grid from './grid.js';
+import {exitNow} from './cli.js';
 
 const randomItem = array => array[Math.floor(Math.random() * array.length)];
 
@@ -39,6 +41,7 @@ export default function App() {
 		(input, _key) => {
 			if (input === 'q') {
 				exit();
+				exitNow();
 			}
 
 			if (R.includes(input, ['y', 'n'])) {
@@ -54,22 +57,43 @@ export default function App() {
 					{name: 'diagonal', passed: false},
 				];
 
-				const roundFigure = randomItem(
-					R.flatten(R.repeat(['triangle', 'rectangle', 'square'], 15)),
-				);
-				const roundGrid = new Grid(roundFigure === 'rectangle' ? 15 : 9, 9, {
+				const roundFigure =
+					randomItem(
+						R.flatten(
+							R.repeat(
+								['triangle', 'rectangle', 'square', 'hexagon', 'rhombus'],
+								15,
+							),
+						),
+					) === 'cs'
+						? 'square'
+						: 'square';
+				const iflessString = new IflessString(roundFigure);
+				const columns = iflessString
+					.whenEq('hexagon', 17)
+					.whenEq('rectangle', 31)
+					.whenEq('rhombus', 33)
+					.otherwise(19).result;
+				const rows = iflessString
+					.reset()
+					.whenEq('hexagon', 17)
+					.whenEq('rhombus', 5)
+					.otherwise(10).result;
+				const roundGrid = new Grid(columns, rows, {
 					fillValue: figureSet.bullet,
+					hiddenValue: ' ',
 				});
 				roundGrid.setAnimatableFigure(roundFigure);
 				state.grd = roundGrid;
 				state.roundFigure = roundFigure;
+
 				const interval = setInterval(() => {
 					state.grd.nextTick();
 					if (state.grd.allPassed) {
 						state.status = 'ASKING';
 						clearInterval(interval);
 					}
-				}, 300);
+				}, 500);
 				state.intervalId = interval;
 			}
 		},
@@ -80,6 +104,7 @@ export default function App() {
 		(input, _key) => {
 			if (input === 'q') {
 				exit();
+				exitNow();
 			}
 		},
 		{isActive: snap.status === 'RUNNING'},
@@ -154,7 +179,10 @@ export default function App() {
 		<Box flexDirection="column">
 			{snap.status === 'RUNNING' ? (
 				<Box alignItems="center" justifyContent="center">
-					<Text>{snap.grd.getStr()}</Text>
+					<Box>
+						<Text>{snap.grd.getStr()}</Text>
+					</Box>
+					<Box />
 				</Box>
 			) : (
 				<Box flexDirection="column" alignItems="center" rowGap={2}>

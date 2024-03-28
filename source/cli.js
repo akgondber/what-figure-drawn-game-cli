@@ -35,3 +35,7 @@ if (cli.flags.fullscreen) {
 } else {
 	render(<App />);
 }
+
+const exitNow = () => process.exit(); // eslint-disable-line n/prefer-global/process
+
+export {exitNow};

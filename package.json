@@ -1,7 +1,9 @@
 {
 	"name": "what-figure-drawn-game-cli",
 	"description": "CLI game where you need to figure out a shape whose outline is being drawn with a marker, the previous mark of which is erased",
-	"version": "1.0.1",
+	"version": "1.0.2",
+	"homepage": "https://github.com/akgondber/what-figure-drawn-game-cli",
+	"repository": "akgondber/what-figure-drawn-game-cli",
 	"license": "MIT",
 	"bin": "dist/cli.js",
 	"type": "module",
@@ -23,6 +25,7 @@
 	"dependencies": {
 		"figures": "^6.1.0",
 		"fullscreen-ink": "^0.0.2",
+		"ifless": "^1.2.0",
 		"ink": "^4.2.0",
 		"ink-gradient": "^3.0.0",
 		"ink-text-input-2": "^1.0.0",
@@ -86,6 +89,9 @@
 		"geometry",
 		"marker",
 		"drawing",
-		"draw"
+		"draw",
+		"attention",
+		"outline",
+		"path"
 	]
 }
