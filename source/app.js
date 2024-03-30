@@ -65,9 +65,7 @@ export default function App() {
 								15,
 							),
 						),
-					) === 'cs'
-						? 'square'
-						: 'square';
+					);
 				const iflessString = new IflessString(roundFigure);
 				const columns = iflessString
 					.whenEq('hexagon', 17)

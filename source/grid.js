@@ -1,3 +1,4 @@
+import { IflessString } from 'ifless';
 import * as R from 'rambda';
 
 class Grid {
@@ -32,7 +33,6 @@ class Grid {
 		this.animatableDirections = ['leftToRight', 'diagonal', 'bottomToUp'];
 		this.animatableFigure = 'triangle';
 		this.allPassed = false;
-		this.diagonalDirection = 'leftDown';
 		this.passedDirections = [];
 		this.currentShowingPoint = {
 			x: 0,
@@ -154,92 +154,46 @@ class Grid {
 			});
 		}
 
-		switch (this.direction) {
-			case 'diagonal': {
-				if (this.diagonalDirection === 'leftDown') {
-					return evolveFn({
-						x: calcXLeft,
-						y: R.inc,
-					});
-				}
-
-				if (this.diagonalDirection === 'leftUp') {
-					return evolveFn({
-						x: calcXLeft,
-						y: R.dec,
-					});
-				}
-
-				if (this.diagonalDirection === 'rightDown') {
-					return evolveFn({
-						x: calcXRight,
-						y: R.inc,
-					});
-				}
-
-				if (this.diagonalDirection === 'rightUp') {
-					return evolveFn({
-						x: calcXLeft,
-						y: R.dec,
-					});
-				}
-
-				break;
-			}
-
-			case 'diagonalLeftDown': {
-				return evolveFn({
-					x: calcDiagLeft,
-					y: R.inc,
-				});
-			}
-
-			case 'diagonalLeftUp': {
-				return evolveFn({
-					x: calcDiagLeft,
-					y: R.dec,
-				});
-			}
-
-			case 'diagonalRightDown': {
-				return evolveFn({
-					x: calcDiagRight,
-					y: R.inc,
-				});
-			}
-
-			case 'diagonalRightUp': {
-				return evolveFn({
-					x: calcDiagRight,
-					y: R.dec,
-				});
-			}
-
-			case 'bottomToUp': {
-				return evolveFn({
-					x: R.identity,
-					y: R.dec,
-				});
-			}
-
-			case 'upToBottom': {
-				return evolveFn({
-					x: R.identity,
-					y: R.inc,
-				});
-			}
-
-			case 'rightToLeft': {
-				return evolveFn({
-					x: calcXLeft,
-					y: R.identity,
-				});
-			}
-
-			default: {
-				throw new Error('Unsupported direction');
-			}
+		const evolvingRule = new IflessString(this.direction)
+			.whenOneOf(['diagonalLeftDown', 'diagonal'], {
+				x: calcDiagLeft,
+				y: R.inc,
+			})
+			.whenEq('diagonalLeftUp', {
+				x: calcDiagLeft,
+				y: R.dec,
+			})
+			.whenEq('diagonalRightDown', {
+				x: calcDiagRight,
+				y: R.inc,
+			})
+			.whenEq('diagonalRightUp', {
+				x: calcDiagRight,
+				y: R.dec,
+			})
+			.whenEq('bottomToUp', {
+				x: R.identity,
+				y: R.dec,
+			})
+			.whenEq('upToBottom', {
+				x: R.identity,
+				y: R.inc,
+			})
+			.whenEq('rightToLeft', {
+				x: calcXLeft,
+				y: R.identity,
+			})
+			.whenEq('leftToRight', {
+				x: calcXRight,
+				y: R.identity,
+			})
+			.result;
+		
+		if (!evolvingRule) {
+			throw new Error(`Unsupported direction: ${this.direction}.`);
 		}
+
+		return evolveFn(evolvingRule);
 	}
 
 	calculateNextDirection() {
