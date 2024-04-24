@@ -1,4 +1,4 @@
-import { IflessString } from 'ifless';
+import {IflessString} from 'ifless';
 import * as R from 'rambda';
 
 class Grid {
@@ -140,10 +140,10 @@ class Grid {
 		const severalIncFigures = ['hexagon', 'triangle'];
 		const calcDiagLeft = R.includes(this.animatableFigure, severalIncFigures)
 			? R.flip(R.subtract)(2)
-			: R.inc;
+			: R.dec;
 		const calcDiagRight = R.includes(this.animatableFigure, severalIncFigures)
 			? R.add(2)
-			: R.dec;
+			: R.inc;
 		const calcXRight = R.add(2);
 		const calcXLeft = R.flip(R.subtract)(2);
 
@@ -186,9 +186,8 @@ class Grid {
 			.whenEq('leftToRight', {
 				x: calcXRight,
 				y: R.identity,
-			})
-			.result;
-		
+			}).result;
+
 		if (!evolvingRule) {
 			throw new Error(`Unsupported direction: ${this.direction}.`);
 		}
@@ -329,20 +328,22 @@ class Grid {
 				break;
 			}
 
-			case 'rhombus': {
+			case 'rhombus':
+			case 'parallelogram': {
+				const isRhombus = figureName === 'rhombus';
 				this.animatableDirections = [
 					'leftToRight',
-					'diagonalLeftDown',
+					isRhombus ? 'diagonalLeftDown' : 'diagonalRightDown',
 					'rightToLeft',
-					'diagonalRightUp',
+					isRhombus ? 'diagonalRightUp' : 'diagonalLeftUp',
 				];
 				this.steps = {
-					leftToRight: 4,
+					leftToRight: isRhombus ? 4 : 12,
 					diagonalLeftDown: 5,
-					rightToLeft: 5,
+					rightToLeft: isRhombus ? 5 : 13,
 					diagonalRightUp: 5,
 				};
-				this.showOnly(5, 0);
+				this.showOnly(10, 0);
 
 				break;
 			}

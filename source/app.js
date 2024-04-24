@@ -57,25 +57,31 @@ export default function App() {
 					{name: 'diagonal', passed: false},
 				];
 
-				const roundFigure =
-					randomItem(
-						R.flatten(
-							R.repeat(
-								['triangle', 'rectangle', 'square', 'hexagon', 'rhombus'],
-								15,
-							),
+				const roundFigure = randomItem(
+					R.flatten(
+						R.repeat(
+							[
+								'triangle',
+								'rectangle',
+								'square',
+								'hexagon',
+								'rhombus',
+								'parallelogram',
+							],
+							15,
 						),
-					);
+					),
+				);
 				const iflessString = new IflessString(roundFigure);
 				const columns = iflessString
 					.whenEq('hexagon', 17)
 					.whenEq('rectangle', 31)
-					.whenEq('rhombus', 33)
+					.whenOneOf(['rhombus', 'parallelogram'], 43)
 					.otherwise(19).result;
 				const rows = iflessString
 					.reset()
 					.whenEq('hexagon', 17)
-					.whenEq('rhombus', 5)
+					.whenOneOf(['rhombus', 'parallelogram'], 5)
 					.otherwise(10).result;
 				const roundGrid = new Grid(columns, rows, {
 					fillValue: figureSet.bullet,
