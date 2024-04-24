@@ -116,7 +116,7 @@ export default function App() {
 
 	if (snap.status === 'ASKING') {
 		return (
-			<Box flexDirection="column" alignItems="center" justifyContent="center">
+			<Box marginTop={2} flexDirection="column" alignItems="center" justifyContent="center">
 				<Text>What figure was drawn?</Text>
 				<TextInput
 					value={snap.answer}
@@ -134,10 +134,10 @@ export default function App() {
 
 	if (snap.status === 'FINISHED') {
 		return (
-			<Box flexDirection="column" columnGap={2} alignItems="center">
-				<Text>Game over</Text>
+			<Box marginTop={2} flexDirection="column" columnGap={2} alignItems="center">
 				{snap.result === 'SUCCESS' ? (
 					<Box marginTop={1} flexDirection="column" rowGap={1}>
+						<Text>Game over</Text>
 						<Text color="green">You won!</Text>
 						<Text>
 							<Text color="green">{figureSet.tick}</Text>
@@ -146,6 +146,7 @@ export default function App() {
 					</Box>
 				) : (
 					<Box marginTop={1} flexDirection="column" rowGap={1}>
+						<Text>Game over</Text>
 						<Text color="red">You lost</Text>
 						<Box flexDirection="column">
 							<Text>
@@ -180,7 +181,7 @@ export default function App() {
 	}
 
 	return (
-		<Box flexDirection="column">
+		<Box marginTop={2} flexDirection="column">
 			{snap.status === 'RUNNING' ? (
 				<Box alignItems="center" justifyContent="center">
 					<Box>
@@ -196,7 +197,6 @@ export default function App() {
 					<Text>
 						Try to figure out a shape whose outline is being drawn with a
 						marker, the previous mark of which is erased.
-						{figureSet.arrowDown}
 					</Text>
 					<Text>
 						Are you ready? Press{' '}

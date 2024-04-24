@@ -27,6 +27,10 @@ CLI game where you need to figure out a shape whose outline is being drawn with 
     $ what-figure-drawn-game-cli -f
 ```
 
+## Demo
+
+![](media/demo.gif)
+
 ## License
 
 MIT © [Rushan Alyautdinov](https://github.com/akgondber)
